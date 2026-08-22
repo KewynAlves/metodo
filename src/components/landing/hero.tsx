@@ -81,7 +81,7 @@ export function Hero() {
             width={1024}
             height={1280}
             alt="Mockup 3D do ebook Método Sedutor"
-            className="w-[68%] max-w-sm drop-shadow-[0_40px_80px_rgba(0,0,0,0.85)] sm:w-[52%] lg:w-full"
+            className="w-[80%] max-w-md drop-shadow-[0_40px_80px_rgba(0,0,0,0.85)] sm:w-[65%] lg:w-[100%] lg:max-w-none"
             animate={reduce ? { y: 0 } : { y: [0, -14, 0] }}
             transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
           />

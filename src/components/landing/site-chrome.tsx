@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-
+import logo from "@/assets/Logo Metodo Sedutor.png";
 import { cn } from "@/lib/utils";
 import { CtaButton } from "./cta-button";
 
@@ -29,12 +29,19 @@ export function SiteHeader() {
       )}
     >
       <div className="mx-auto flex h-18 w-full max-w-6xl items-center justify-between px-6 sm:px-8">
-        <a href="#hero" className="flex flex-col leading-none">
+        <a href="#hero" className="flex items-center gap-3 leading-none">
+        <img 
+          src={logo} 
+          alt="Logo Método Sedutor" 
+          className="h-10 w-auto object-contain" 
+        />
+        <div className="flex flex-col">
           <span className="font-display text-lg tracking-wide">Método Sedutor</span>
           <span className="text-[0.6rem] uppercase tracking-[0.3em] text-muted-foreground">
             Desenvolvimento masculino
           </span>
-        </a>
+        </div>
+      </a>
 
         <nav aria-label="Navegação principal" className="hidden items-center gap-9 lg:flex">
           {navItems.map((item) => (
