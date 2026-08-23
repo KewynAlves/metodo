@@ -32,14 +32,12 @@ export function Hero() {
           <Eyebrow>Desenvolvimento masculino</Eyebrow>
 
           <h1 className="text-balance-tight text-5xl leading-[1.02] sm:text-6xl md:text-7xl">
-            A confiança que muda
-            <span className="block text-primary">a forma como te olham</span>
+            Pare de ser ignorado
+            <span className="block text-primary">Desperte interesse sem fingir ser quem você não é.</span>
           </h1>
 
           <p className="max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">
-            Texto temporário de subheadline. Aqui entra a promessa central do Método Sedutor:
-            evolução real de presença, comunicação e mentalidade — sem frases prontas, sem truques,
-            sem manipulação.
+            Descubra o segredo da verdadeira conquista através de uma evolução real de presença, comunicação e mentalidade — sem máscaras, sem joguinhos.
           </p>
 
           <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:items-center sm:gap-4">
@@ -55,7 +53,7 @@ export function Hero() {
             {[
               ["+2.400", "homens"],
               ["4,9/5", "avaliação"],
-              ["7 dias", "garantia"],
+              ["100%", "prático"],
             ].map(([value, label]) => (
               <div key={label} className="flex items-baseline gap-2">
                 <dt className="sr-only">{label}</dt>
