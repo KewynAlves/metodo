@@ -23,7 +23,7 @@ export function Why() {
               <span className="block text-muted-foreground">o que te disseram</span>
             </>
           }
-          description="Texto temporário explicando que a dificuldade não vem de fatores externos, e sim da ausência de habilidades sociais treinadas."
+          description="O problema nunca foi quem você é. É apenas o fato de que nunca te deram as ferramentas certas, te deixando preso na tentativa e erro."
         />
 
         <div className="flex flex-col gap-10">
