@@ -33,7 +33,7 @@ export function Hero() {
 
           <h1 className="text-balance-tight text-5xl leading-[1.02] sm:text-6xl md:text-7xl">
             Pare de ser ignorado
-            <span className="block text-primary">Desperte interesse sem fingir ser quem você não é.</span>
+            <span className="block text-primary">Desperte interesse sem fingir ser quem você não é</span>
           </h1>
 
           <p className="max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">
