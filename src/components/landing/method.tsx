@@ -7,19 +7,19 @@ const pillars = [
     icon: ShieldCheck,
     label: "Pilar 01",
     title: "Autoconfiança",
-    text: "Texto temporário. Construção de autoimagem, postura e mentalidade masculina sólida — a base de tudo.",
+    text: "Construção de uma presença inabalável. A base sólida de quem não se abala com o ambiente e domina a própria postura.",
   },
   {
     icon: MessagesSquare,
     label: "Pilar 02",
     title: "Comunicação",
-    text: "Texto temporário. Conversas com naturalidade, escuta ativa, humor e presença verbal e corporal.",
+    text: "A arte de prender a atenção sem esforço. Conversas naturais, escuta ativa e o fim definitivo do branco na hora de falar.",
   },
   {
     icon: Flame,
     label: "Pilar 03",
     title: "Atração Natural",
-    text: "Texto temporário. A atração como consequência da sua evolução, não como técnica de manipulação.",
+    text: "Atrair como consequência da sua evolução genuína, eliminando qualquer postura robótica ou técnica barata de manipulação.",
   },
 ];
 
@@ -33,7 +33,7 @@ export function Method() {
             Três pilares. <span className="text-primary">Uma transformação.</span>
           </>
         }
-        description="Texto temporário de apresentação do método: um caminho estruturado de desenvolvimento pessoal para homens que querem evoluir de verdade."
+        description="Um sistema direto ao ponto para quem quer evoluir de verdade, sem truques baratos ou fórmulas mágicas que não funcionam na vida real."
       />
 
       <div className="mt-16 grid gap-6 md:grid-cols-3 md:gap-8">
