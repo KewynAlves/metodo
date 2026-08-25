@@ -4,13 +4,34 @@ import ebook from "@/assets/ebook-3d.png";
 import { Reveal, Section, SectionHeading } from "./primitives";
 
 const modules = [
-  { title: "Módulo 01 — Fundamentos", text: "Texto temporário do capítulo." },
-  { title: "Módulo 02 — Autoconfiança", text: "Texto temporário do capítulo." },
-  { title: "Módulo 03 — Comunicação", text: "Texto temporário do capítulo." },
-  { title: "Módulo 04 — Linguagem corporal", text: "Texto temporário do capítulo." },
-  { title: "Módulo 05 — Inteligência social", text: "Texto temporário do capítulo." },
-  { title: "Módulo 06 — Atração natural", text: "Texto temporário do capítulo." },
-  { title: "Módulo 07 — Rotina de evolução", text: "Texto temporário do capítulo." },
+  { 
+    title: "Módulos 01 — 02", 
+    text: "Identidade Masculina e Autoconfiança na Prática" 
+  },
+  { 
+    title: "Módulos 03 — 04", 
+    text: "Rejeição e Abordagem Natural" 
+  },
+  { 
+    title: "Módulos 05 — 06", 
+    text: "Conversa, Inteligência Social e Flerte Natural" 
+  },
+  { 
+    title: "Módulos 07 — 08", 
+    text: "Linguagem Corporal, Presença e Autocuidado" 
+  },
+  { 
+    title: "Módulos 09 — 10", 
+    text: "Vida Social Interessante e Disciplina Diária" 
+  },
+  { 
+    title: "Módulos Bônus 11 — 14", 
+    text: "Aprofundamento avançado e ferramentas extras" 
+  },
+  { 
+    title: "Plano de Transformação", 
+    text: "Cronograma prático para 7, 30 e 90 dias" 
+  },
 ];
 
 const specs = [
@@ -56,7 +77,7 @@ export function Contents() {
             align="left"
             eyebrow="Conteúdo do método"
             title={<>Tudo o que você vai encontrar dentro</>}
-            description="Textos temporários. A estrutura final dos módulos será definida na etapa de copy."
+            description="O mapa completo da sua evolução, dividido em módulos práticos para aplicação imediata"
           />
 
           <ol className="mt-12 divide-y divide-border border-y border-border">
