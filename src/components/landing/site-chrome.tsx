@@ -85,7 +85,7 @@ export function MobileCtaBar() {
           <p className="text-[0.6rem] uppercase tracking-[0.22em] text-muted-foreground">
             Acesso completo
           </p>
-          <p className="font-display text-2xl text-primary">R$ 97</p>
+          <p className="font-display text-2xl text-primary">R$ 29,90</p>
         </div>
         <CtaButton href="#oferta" className="flex-1 justify-center">
           Quero o Método
