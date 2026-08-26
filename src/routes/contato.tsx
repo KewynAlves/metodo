@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteHeader, SiteFooter, MobileCtaBar } from "@/components/landing/site-chrome";
 import { ArrowLeft, Mail, Clock, MessageSquare, Instagram } from "lucide-react";
@@ -7,6 +8,9 @@ export const Route = createFileRoute("/contato")({
 });
 
 function ContatoPage() {
+    useEffect(() => {
+    document.title = "Contato | Método Sedutor"; // <--- Adicione este bloco
+  }, []);
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col selection:bg-primary selection:text-white">
       <SiteHeader />

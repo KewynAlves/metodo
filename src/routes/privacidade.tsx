@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteHeader, SiteFooter, MobileCtaBar } from "@/components/landing/site-chrome";
 import { ArrowLeft } from "lucide-react";
@@ -7,6 +8,9 @@ export const Route = createFileRoute("/privacidade")({
 });
 
 function PrivacidadePage() {
+  useEffect(() => {
+    document.title = "Política de Privacidade | Método Sedutor";
+  }, [])
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col selection:bg-primary selection:text-white">
       <SiteHeader />
