@@ -1,3 +1,100 @@
+import { useEffect, useState } from "react";
+import logo from "@/assets/Logo Metodo Sedutor.png";
+import { cn } from "@/lib/utils";
+import { CtaButton } from "./cta-button";
+
+const navItems = [
+  { label: "Método", href: "#metodo" },
+  { label: "Conteúdo", href: "#conteudo" },
+  { label: "Depoimentos", href: "#depoimentos" },
+  { label: "Autor", href: "#autor" },
+  { label: "FAQ", href: "#faq" },
+];
+
+export function SiteHeader() {
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  return (
+    <header
+      className={cn(
+        "fixed inset-x-0 top-0 z-50 transition-all duration-500",
+        scrolled ? "border-b border-border bg-background/85 backdrop-blur-xl" : "border-b border-transparent",
+      )}
+    >
+      <div className="mx-auto flex h-18 w-full max-w-6xl items-center justify-between px-6 sm:px-8">
+        <a href="#hero" className="flex items-center gap-3 leading-none">
+        <img 
+          src={logo} 
+          alt="Logo Método Sedutor" 
+          className="h-10 w-auto object-contain" 
+        />
+        <div className="flex flex-col">
+          <span className="font-display text-lg tracking-wide">Método Sedutor</span>
+          <span className="text-[0.6rem] uppercase tracking-[0.3em] text-muted-foreground">
+            Desenvolvimento masculino
+          </span>
+        </div>
+      </a>
+
+        <nav aria-label="Navegação principal" className="hidden items-center gap-9 lg:flex">
+          {navItems.map((item) => (
+            <a
+              key={item.href}
+              href={item.href}
+              className="text-xs uppercase tracking-[0.18em] text-muted-foreground transition-colors hover:text-foreground"
+            >
+              {item.label}
+            </a>
+          ))}
+        </nav>
+
+        <CtaButton href="#oferta" className="hidden sm:inline-flex">
+          Quero o Método
+        </CtaButton>
+      </div>
+    </header>
+  );
+}
+
+export function MobileCtaBar() {
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setVisible(window.scrollY > 700);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  return (
+    <div
+      className={cn(
+        "fixed inset-x-0 bottom-0 z-50 border-t border-border bg-background/95 px-5 py-3.5 backdrop-blur-xl transition-transform duration-500 sm:hidden",
+        visible ? "translate-y-0" : "translate-y-full",
+      )}
+    >
+      <div className="flex items-center justify-between gap-4">
+        <div className="leading-tight">
+          <p className="text-[0.6rem] uppercase tracking-[0.22em] text-muted-foreground">
+            Acesso completo
+          </p>
+          <p className="font-display text-2xl text-primary">R$ 97</p>
+        </div>
+        <CtaButton href="#oferta" className="flex-1 justify-center">
+          Quero o Método
+        </CtaButton>
+      </div>
+    </div>
+  );
+}
+
 export function SiteFooter() {
   return (
     <footer className="border-t border-border bg-surface px-6 pt-14 pb-28 sm:px-8 sm:pb-14">
