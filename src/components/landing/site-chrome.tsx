@@ -159,16 +159,20 @@ export function SiteFooter() {
 
         {/* Lado Direito: Links Legais */}
         <nav aria-label="Links legais" className="flex flex-wrap justify-center lg:justify-end items-center gap-x-8 gap-y-3">
-          {["Termos de uso", "Política de privacidade", "Contato"].map((label) => (
+          {[
+            { label: "Termos de uso", href: "/termos" },
+            { label: "Política de privacidade", href: "/privacidade" },
+            { label: "Contato", href: "#contato" },
+          ].map((item) => (
             <a
-              key={label}
-              href="#final"
-              className="text-xs uppercase tracking-[0.18em] text-muted-foreground transition-colors hover:text-foreground whitespace-nowrap"
-            >
-              {label}
-            </a>
-          ))}
-        </nav>
+              key={item.label}
+            href={item.href}
+            className="text-xs uppercase tracking-[0.18em] text-muted-foreground transition-colors hover:text-foreground whitespace-nowrap"
+          >
+            {item.label}
+         </a>
+       ))}
+    </nav>
 
       </div>
 
