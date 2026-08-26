@@ -2,10 +2,10 @@ import authorPhoto from "@/assets/author.jpg";
 import { Reveal, Section, SectionHeading } from "./primitives";
 
 const timeline = [
-  { year: "2016", text: "Texto temporário do início da jornada." },
-  { year: "2019", text: "Texto temporário sobre estudo e prática." },
-  { year: "2022", text: "Texto temporário sobre mentorias presenciais." },
-  { year: "2026", text: "Texto temporário sobre a criação do Método Sedutor." },
+  { year: "2016", text: "O início das pesquisas práticas e os primeiros testes de campo entre o Brasil e a Europa." },
+  { year: "2019", text: "Lapidação das abordagens e validação do método com centenas de alunos próximos." },
+  { year: "2022", text: "A consolidação das mentorias presenciais e expansão do conhecimento prático." },
+  { year: "2026", text: "O lançamento oficial do Método Sedutor para transformar a realidade de milhares de homens." },
 ];
 
 export function Author() {
@@ -28,7 +28,7 @@ export function Author() {
               className="aspect-4/5 w-full rounded-sm object-cover shadow-[var(--shadow-elegant)]"
             />
             <figcaption className="mt-5 text-xs uppercase tracking-[0.28em] text-muted-foreground">
-              Nome do autor · Mentor de desenvolvimento masculino
+              Marco Montana · Mentor de desenvolvimento masculino
             </figcaption>
           </figure>
         </Reveal>
@@ -38,13 +38,12 @@ export function Author() {
             align="left"
             eyebrow="Sobre o autor"
             title={<>Uma história antes de um método</>}
-            description="Texto temporário. Aqui entram história pessoal, autoridade construída e a missão do autor com o Método Sedutor."
+            description="Herança ítalo-brasileira e anos de testes de campo no mundo real. Uma trajetória construída na prática para destravar a sua evolução masculina."
           />
 
           <Reveal delay={0.1}>
             <p className="border-l-2 border-primary pl-6 text-lg leading-relaxed text-foreground/90 italic">
-              “Frase temporária de missão do autor, resumindo em uma linha a visão sobre evolução
-              masculina.”
+              “A verdadeira sedução não é sobre técnicas vazias, mas sobre a postura imbatível de um homem que assume o controle da própria vida.”
             </p>
           </Reveal>
 

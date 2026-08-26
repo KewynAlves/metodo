@@ -5,7 +5,7 @@ import { CtaButton } from "./cta-button";
 import { Reveal, Section, SectionHeading } from "./primitives";
 
 const included = [
-  "Ebook completo em PDF (7 módulos)",
+  "Ebook completo em PDF (10 módulos + bônus)",
   "Acesso imediato após a compra",
   "Atualizações futuras inclusas",
   "Leitura prática em qualquer dispositivo",
@@ -18,7 +18,7 @@ export function Offer() {
       <SectionHeading
         eyebrow="A oferta"
         title={<>Comece hoje sua evolução</>}
-        description="Valores temporários apenas para demonstrar a estrutura do card de oferta."
+        description="Acesso imediato ao método completo por um valor único e exclusivo de lançamento."
       />
 
       <Reveal className="mt-16">
@@ -66,8 +66,8 @@ export function Offer() {
               />
 
               <div className="flex flex-col items-center gap-2">
-                <p className="text-sm text-muted-foreground line-through">De R$ 297,00</p>
-                <p className="font-display text-6xl leading-none text-primary">R$ 97</p>
+                <p className="text-sm text-muted-foreground line-through">De R$ 97,00</p>
+                <p className="font-display text-6xl leading-none text-primary">R$ 29,90</p>
                 <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">
                   Pagamento único
                 </p>
