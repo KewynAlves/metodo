@@ -162,7 +162,7 @@ export function SiteFooter() {
           {[
             { label: "Termos de uso", href: "/termos" },
             { label: "Política de privacidade", href: "/privacidade" },
-            { label: "Contato", href: "#contato" },
+            { label: "Contato", href: "contato" },
           ].map((item) => (
             <a
               key={item.label}
