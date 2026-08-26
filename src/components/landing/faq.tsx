@@ -9,27 +9,27 @@ import { Reveal, Section, SectionHeading } from "./primitives";
 const faqs = [
   {
     q: "Para quem é o Método Sedutor?",
-    a: "Resposta temporária. Para homens que querem desenvolver confiança, comunicação e habilidades sociais de forma estruturada.",
+    a: "Para homens que buscam desenvolver confiança inabalável, postura magnética e habilidades sociais na prática, sem precisar recorrer a truques falsos ou personagens que não funcionam no mundo real.",
   },
   {
     q: "O método ensina frases prontas ou truques?",
-    a: "Resposta temporária. Não. O foco é desenvolvimento pessoal real: mentalidade, presença e inteligência social.",
+    a: "Não. O foco é na transformação da mentalidade, postura e comunicação autêntica. Em vez de decorar falas robóticas, você desenvolve a capacidade natural de atrair e liderar interações",
   },
   {
     q: "Funciona para quem é muito tímido?",
-    a: "Resposta temporária. Sim, o conteúdo começa pelos fundamentos e evolui em etapas progressivas.",
+    a: "Sim. O método foi desenhado exatamente para estruturar o passo a passo de quem sofre com ansiedade social ou timidez, mostrando como dar os primeiros passos de forma segura e progressiva.",
   },
   {
     q: "Como recebo o acesso?",
-    a: "Resposta temporária. O acesso é imediato após a confirmação do pagamento, em formato PDF.",
+    a: "O acesso ao material completo é enviado de forma 100% digital e imediata para o seu e-mail logo após a confirmação do pagamento, permitindo que você comece a estudar instantaneamente em qualquer dispositivo.",
   },
   {
     q: "Quanto tempo leva para ver resultados?",
-    a: "Resposta temporária. Depende da aplicação, mas o material é pensado para prática desde o primeiro módulo.",
+    a: "Os resultados dependem da sua dedicação em aplicar os conceitos no mundo real. Muitos alunos relatam mudanças significativas na percepção e nas abordagens logo na primeira semana de prática.",
   },
   {
     q: "E se eu não gostar?",
-    a: "Resposta temporária. Você tem 7 dias de garantia incondicional com reembolso integral.",
+    a: "Se você aplicar o método e não vir resultados consistentes dentro de 7 dias, o seu investimento é devolvido integralmente. Risco zero para você.",
   },
 ];
 

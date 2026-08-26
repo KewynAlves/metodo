@@ -37,8 +37,7 @@ export function FinalCta() {
             <span className="block text-primary">com uma decisão</span>
           </h2>
           <p className="max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
-            Texto temporário de fechamento. Aqui entra a chamada final mais forte da página,
-            reforçando a transformação e a urgência da decisão.
+            Você pode fechar esta página e continuar exatamente onde está, ou tomar a decisão que vai mudar o jogo a partir de hoje por menos do que o preço de uma pizza. O próximo nível da sua confiança te espera. Clique abaixo e comece agora.
           </p>
           <CtaButton href="#oferta" size="xl">
             Quero o Método Sedutor

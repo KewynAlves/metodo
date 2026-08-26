@@ -16,8 +16,7 @@ export function Guarantee() {
             7 dias de garantia incondicional
           </h2>
           <p className="text-base leading-relaxed text-muted-foreground sm:text-lg">
-            Texto temporário. Se por qualquer motivo o método não fizer sentido para você, o
-            reembolso é integral — sem perguntas, sem burocracia.
+            Se você aplicar o método e não vir resultados consistentes dentro de 7 dias, o seu investimento é devolvido integralmente. Risco zero para você.
           </p>
         </div>
       </Reveal>
