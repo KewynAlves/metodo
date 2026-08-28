@@ -73,7 +73,7 @@ export function Offer() {
                 </p>
               </div>
 
-              <CtaButton href="#final" size="xl">
+              <CtaButton href="https://pay.cakto.com.br/z4fgfgy_1069109" size="xl">
                 Quero o Método Sedutor
               </CtaButton>
 
