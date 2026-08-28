@@ -41,7 +41,7 @@ export function Hero() {
           </p>
 
           <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:items-center sm:gap-4">
-            <CtaButton href="#oferta" size="lg">
+            <CtaButton href="https://pay.cakto.com.br/z4fgfgy_1069109" size="lg">
               Quero o Método Sedutor
             </CtaButton>
             <CtaButton href="#metodo" variant="outline" size="lg">

@@ -55,7 +55,7 @@ export function SiteHeader() {
           ))}
         </nav>
 
-        <CtaButton href="#oferta" className="hidden sm:inline-flex">
+        <CtaButton href="https://pay.cakto.com.br/z4fgfgy_1069109" className="hidden sm:inline-flex">
           Quero o Método
         </CtaButton>
       </div>
@@ -87,7 +87,7 @@ export function MobileCtaBar() {
           </p>
           <p className="font-display text-2xl text-primary">R$ 29,90</p>
         </div>
-        <CtaButton href="#oferta" className="flex-1 justify-center">
+        <CtaButton href="https://pay.cakto.com.br/z4fgfgy_1069109" className="flex-1 justify-center">
           Quero o Método
         </CtaButton>
       </div>

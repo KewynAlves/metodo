@@ -39,7 +39,7 @@ export function FinalCta() {
           <p className="max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
             Você pode fechar esta página e continuar exatamente onde está, ou tomar a decisão que vai mudar o jogo a partir de hoje por menos do que o preço de uma pizza. O próximo nível da sua confiança te espera. Clique abaixo e comece agora.
           </p>
-          <CtaButton href="#oferta" size="xl">
+          <CtaButton href="https://pay.cakto.com.br/z4fgfgy_1069109" size="xl">
             Quero o Método Sedutor
           </CtaButton>
           <ul className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-xs uppercase tracking-[0.18em] text-muted-foreground">
