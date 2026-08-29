@@ -116,7 +116,7 @@ export function SiteFooter() {
           <div className="flex items-center gap-3">
             {/* Instagram */}
             <a
-              href="https://instagram.com"
+              href="https://www.instagram.com/metodosedutorpro/"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Instagram"
@@ -131,7 +131,7 @@ export function SiteFooter() {
 
             {/* TikTok */}
             <a
-              href="https://tiktok.com"
+              href="https://www.tiktok.com/@metodosedutorpro"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="TikTok"
@@ -144,7 +144,7 @@ export function SiteFooter() {
 
             {/* Facebook */}
             <a
-              href="https://facebook.com"
+              href="https://www.facebook.com/metodosedutorpro/"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Facebook"
