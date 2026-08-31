@@ -60,13 +60,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // 2. COMPRA APROVADA
     if (event === 'paid' || event === 'approved' || event === 'ORDER_APPROVED') {
       const items: any[] = eventData.items || [];
-      const productName = eventData.product?.name || '';
+      const productName = (eventData.product?.name || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
       
-      const hasSedutor = items.some((item: any) => item.name?.toLowerCase().includes('método sedutor')) || 
-                         productName.toLowerCase().includes('método sedutor');
-                         
-      const hasTimidez = items.some((item: any) => item.name?.toLowerCase().includes('timidez')) || 
-                         productName.toLowerCase().includes('timidez');
+      const itemsText = items.map((i: any) => (i.name || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")).join(' ');
+      const fullText = `${productName} ${itemsText}`;
+
+      const hasSedutor = fullText.includes('sedutor');
+      const hasTimidez = fullText.includes('timidez');
 
       const isCombo = hasSedutor && hasTimidez;
       const isOnlyTimidez = !hasSedutor && hasTimidez;
