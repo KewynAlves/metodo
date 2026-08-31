@@ -7,7 +7,7 @@ const redis = new Redis({
 });
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  const { token } = req.query;
+  const { token, file } = req.query;
 
   if (!token || typeof token !== 'string') {
     return res.status(400).send('Token de download ausente ou inválido.');
@@ -26,6 +26,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(403).send('Você atingiu o limite máximo de downloads permitidos para este link.');
     }
 
+    // Controla o consumo de downloads
     tokenData.downloadsLeft -= 1;
 
     if (tokenData.downloadsLeft <= 0) {
@@ -34,6 +35,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       await redis.set(`token:${token}`, JSON.stringify(tokenData), { keepTtl: true });
     }
 
+    // Se pediu o timidez e tem direito, redireciona para o arquivo correto
+    if (file === 'timidez' && tokenData.hasTimidez) {
+      return res.redirect(302, '/metodo-timidez-zero.pdf');
+    }
+
+    // Padrão: Redireciona para o Método Sedutor principal
     return res.redirect(302, '/metodo-sedutor.pdf');
   } catch (error) {
     console.error('Erro no download:', error);
