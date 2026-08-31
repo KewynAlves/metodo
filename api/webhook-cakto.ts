@@ -17,7 +17,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const eventData = req.body || {};
     const event = eventData.event;
     
-    // Captura o e-mail do payload da Cakto ou usa um fallback caso o teste venha vazio
     const customerEmail = eventData.customer?.email || eventData.email || 'metodosedutor1@gmail.com';
 
     if (!customerEmail) {
@@ -68,7 +67,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
       const token = Math.random().toString(36).substring(2) + Date.now().toString(36);
 
-      // Mantém 6 downloads reais por baixo dos panos no Redis
       await redis.set(`token:${token}`, JSON.stringify({
         email: customerEmail,
         hasSedutor: true,
@@ -79,6 +77,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
       await redis.set(`email:${customerEmail}`, token, { ex: 604800 });
 
+      // URLs fixas e absolutas para evitar qualquer erro de parse
       const linkSedutor = `https://www.sedutor.shop/api/download?token=${token}&file=sedutor`;
       const linkTimidez = `https://www.sedutor.shop/api/download?token=${token}&file=timidez`;
 
