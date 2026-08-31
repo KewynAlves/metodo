@@ -14,7 +14,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
-    const eventData = req.body;
+    const eventData = req.body || {};
     const event = eventData.event;
     const customerEmail = eventData.customer?.email;
 
@@ -22,33 +22,35 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(400).json({ error: 'E-mail do cliente não encontrado no payload' });
     }
 
-    // 1. TRATAMENTO DE REEMBOLSO / CHARGEBACK (Revogação total de acesso)
+    // 1. REEMBOLSO / CHARGEBACK
     if (event === 'refund' || event === 'chargeback' || event === 'REFUNDED' || event === 'CHARGEBACK') {
-      const activeToken = await redis.get(`email:${customerEmail}`);
-      if (activeToken) {
-        await redis.del(`token:${activeToken}`);
-        await redis.del(`email:${customerEmail}`);
-      }
+      try {
+        const activeToken = await redis.get(`email:${customerEmail}`);
+        if (activeToken) {
+          await redis.del(`token:${activeToken}`);
+          await redis.del(`email:${customerEmail}`);
+        }
 
-      const keys = await redis.keys(`token:*`);
-      for (const key of keys) {
-        const tokenDataStr = await redis.get(key);
-        if (tokenDataStr) {
-          try {
-            const data: any = typeof tokenDataStr === 'string' ? JSON.parse(tokenDataStr) : tokenDataStr;
-            if (data.email === customerEmail) {
-              await redis.del(key);
+        const keys = await redis.keys(`token:*`);
+        if (keys && Array.isArray(keys)) {
+          for (const key of keys) {
+            const tokenDataStr = await redis.get(key);
+            if (tokenDataStr) {
+              const data: any = typeof tokenDataStr === 'string' ? JSON.parse(tokenDataStr) : tokenDataStr;
+              if (data && data.email === customerEmail) {
+                await redis.del(key);
+              }
             }
-          } catch (e) {
-            // Ignora erro de parse
           }
         }
+      } catch (redisError) {
+        console.error('Erro no Redis durante reembolso:', redisError);
       }
 
-      return res.status(200).json({ message: 'Acesso revogado com sucesso para todos os tokens do e-mail' });
+      return res.status(200).json({ message: 'Acesso revogado com sucesso' });
     }
 
-    // 2. TRATAMENTO DE COMPRA APROVADA
+    // 2. COMPRA APROVADA
     if (event === 'paid' || event === 'approved' || event === 'ORDER_APPROVED') {
       const items: any[] = eventData.items || [];
       const productName = eventData.product?.name || '';
@@ -60,7 +62,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
                          productName.toLowerCase().includes('timidez');
 
       const isCombo = hasSedutor && hasTimidez;
-      const isOnlySedutor = hasSedutor && !hasTimidez;
       const isOnlyTimidez = !hasSedutor && hasTimidez;
 
       const token = Math.random().toString(36).substring(2) + Date.now().toString(36);
@@ -114,26 +115,20 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         html: `
           <div style="background-color: #09090b; color: #f4f4f5; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; padding: 40px 20px;">
             <div style="max-width: 600px; margin: 0 auto; background-color: #121215; border: 1px solid #27272a; border-radius: 12px; padding: 32px;">
-              
               <h1 style="color: #ffffff; font-size: 22px; text-align: center; margin-bottom: 24px; letter-spacing: -0.5px;">MÉTODO SEDUTOR PRO</h1>
-              
               <p style="font-size: 16px; line-height: 1.6; color: #d4d4d8; text-align: center;">
                 Parabéns pela decisão! Seus e-books digitais (<strong style="color: #ffffff;">${productsTitle}</strong>) já estão prontos para serem baixados.
               </p>
-
               ${buttonsHtml}
-
               <div style="background-color: #18181b; border: 1px solid #27272a; padding: 20px; border-radius: 8px; font-size: 13px; color: #a1a1aa; margin: 28px 0;">
                 <strong style="color: #ffffff; font-size: 14px; display: block; margin-bottom: 8px;">📌 Informações dos seus links seguros:</strong>
                 <ul style="margin: 0; padding-left: 18px; line-height: 1.8;">
                   <li>Links exclusivos associados ao seu e-mail de compra.</li>
-                  <li>O pacote permite até <strong style="color: #ffffff;">6 downloads totais</strong> entre os materiais.</li>
+                  <li>O pacote permite até <strong style="color: #ffffff;">3 downloads totais</strong> entre os materiais.</li>
                   <li>Válidos por <strong style="color: #ffffff;">7 dias</strong>.</li>
                 </ul>
               </div>
-
               <hr style="border: none; border-top: 1px solid #27272a; margin: 32px 0;" />
-              
               <p style="font-size: 12px; color: #71717a; text-align: center; margin: 0;">
                 Precisa de ajuda?<br>
                 Mande um e-mail para <a href="mailto:contato@sedutor.shop" style="color: #a1a1aa; text-decoration: underline;">contato@sedutor.shop</a> que respondemos em menos de 24h.
@@ -147,8 +142,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     return res.status(200).json({ message: 'Evento ignorado' });
-  } catch (error) {
-    console.error('Erro no webhook:', error);
-    return res.status(500).json({ error: 'Erro interno ao processar webhook' });
+  } catch (error: any) {
+    console.error('Erro crítico no webhook:', error?.message || error);
+    return res.status(500).json({ error: 'Erro interno ao processar webhook', details: error?.message });
   }
 }
