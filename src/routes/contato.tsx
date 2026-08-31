@@ -44,7 +44,7 @@ function ContatoPage() {
             </div>
             
             <a 
-              href="mailto:metodosedutor1@gmail.com"
+              href="mailto:contato@sedutor.shop"
               className="inline-flex items-center justify-center px-6 py-3 rounded-xl bg-primary text-primary-foreground font-medium text-sm hover:opacity-95 transition-opacity whitespace-nowrap shadow-lg shadow-primary/20"
             >
               Enviar E-mail
