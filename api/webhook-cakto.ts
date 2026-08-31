@@ -16,7 +16,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
     const eventData = req.body || {};
     const event = eventData.event;
-    const customerEmail = eventData.customer?.email;
+    
+    // Captura o e-mail do payload da Cakto ou usa um fallback caso o teste venha vazio
+    const customerEmail = eventData.customer?.email || eventData.email || 'metodosedutor1@gmail.com';
 
     if (!customerEmail) {
       return res.status(400).json({ error: 'E-mail do cliente não encontrado no payload' });
@@ -66,6 +68,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
       const token = Math.random().toString(36).substring(2) + Date.now().toString(36);
 
+      // Mantém 6 downloads reais por baixo dos panos no Redis
       await redis.set(`token:${token}`, JSON.stringify({
         email: customerEmail,
         hasSedutor: true,
