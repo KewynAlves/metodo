@@ -7,13 +7,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
-    // Validação defensiva das chaves de ambiente
-    const redisUrl = process.env.UPSTASH_REDIS_REST_URL;
-    const redisToken = process.env.UPSTASH_REDIS_REST_TOKEN;
+    // Usando os nomes exatos das variáveis do seu painel da Vercel
+    const redisUrl = process.env.UPSTASH_REDIS_REST_KV_REST_API_URL;
+    const redisToken = process.env.UPSTASH_REDIS_REST_KV_REST_API_TOKEN;
     const resendKey = process.env.RESEND_API_KEY;
 
     if (!redisUrl || !redisToken) {
-      return res.status(500).json({ error: 'Configuração ausente', details: 'UPSTASH_REDIS_REST_URL ou TOKEN não definidos' });
+      return res.status(500).json({ error: 'Configuração ausente', details: 'UPSTASH_REDIS_REST_KV_REST_API_URL ou TOKEN não definidos' });
     }
 
     const redis = new Redis({
