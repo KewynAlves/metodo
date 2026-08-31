@@ -65,18 +65,29 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
       await redis.set(`email:${customerEmail}`, token, { ex: 604800 });
 
-      const downloadLink = `https://www.sedutor.shop/api/download?token=${token}`;
+      // Links específicos para cada material
+      const downloadLinkPrincipal = `https://www.sedutor.shop/api/download?token=${token}`;
+      const downloadLinkTimidez = `https://www.sedutor.shop/api/download?token=${token}&file=timidez`;
 
       // Texto descritivo dependendo se levou o combo ou só um
       const produtosTexto = hasTimidez 
         ? 'Método Sedutor Pro + Bônus Timidez Zero' 
         : 'Método Sedutor Pro';
 
+      // Bloco do botão secundário caso tenha comprado o Order Bump
+      const botaoTimidezHtml = hasTimidez ? `
+        <div style="text-align: center; margin: 20px 0;">
+          <a href="${downloadLinkTimidez}" style="background-color: #27272a; color: #ffffff; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: 700; font-size: 15px; display: inline-block; border: 1px solid #3f3f46; box-shadow: 0 4px 14px rgba(0,0,0,0.3);">
+            BAIXAR BÔNUS: TIMIDEZ ZERO (PDF) →
+          </a>
+        </div>
+      ` : '';
+
       await resend.emails.send({
         from: 'Método Sedutor <contato@sedutor.shop>',
         to: [customerEmail],
         subject: `Seu acesso exclusivo ao ${produtosTexto} chegou!`,
-        text: `Olá! Parabéns pela aquisição. O seu acesso foi liberado com sucesso. Baixe seus materiais no link: ${downloadLink}. Este link é exclusivo e permite até 3 downloads.`,
+        text: `Olá! Parabéns pela aquisição. O seu acesso foi liberado com sucesso. Baixe seus materiais nos links enviados. Cada link permite até 3 downloads.`,
         html: `
           <div style="background-color: #09090b; padding: 40px 15px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; min-height: 100%;">
             <div style="max-width: 540px; margin: 0 auto; background-color: #111113; border-radius: 12px; overflow: hidden; border: 1px solid #27272a; box-shadow: 0 10px 25px rgba(0,0,0,0.5);">
@@ -91,18 +102,20 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
                   Parabéns pela decisão! Seus e-books digitais (<strong style="color: #ffffff;">${produtosTexto}</strong>) já estão prontos para serem baixados.
                 </p>
 
-                <div style="text-align: center; margin: 36px 0;">
-                  <a href="${downloadLink}" style="background-color: #e11d48; color: #ffffff; padding: 16px 36px; text-decoration: none; border-radius: 8px; font-weight: 700; font-size: 16px; display: inline-block; box-shadow: 0 4px 14px rgba(225, 29, 72, 0.4);">
-                    BAIXAR SEUS E-BOOKS EM PDF →
+                <div style="text-align: center; margin: 30px 0 15px 0;">
+                  <a href="${downloadLinkPrincipal}" style="background-color: #e11d48; color: #ffffff; padding: 16px 36px; text-decoration: none; border-radius: 8px; font-weight: 700; font-size: 16px; display: inline-block; box-shadow: 0 4px 14px rgba(225, 29, 72, 0.4);">
+                    BAIXAR MÉTODO SEDUTOR PRO →
                   </a>
                 </div>
 
+                ${botaoTimidezHtml}
+
                 <div style="background-color: #18181b; border: 1px solid #27272a; padding: 20px; border-radius: 8px; font-size: 13px; color: #a1a1aa; margin: 28px 0;">
-                  <strong style="color: #ffffff; font-size: 14px; display: block; margin-bottom: 8px;">📌 Informações do seu link seguro:</strong>
+                  <strong style="color: #ffffff; font-size: 14px; display: block; margin-bottom: 8px;">📌 Informações dos seus links seguros:</strong>
                   <ul style="margin: 0; padding-left: 18px; line-height: 1.8;">
-                    <li>Link exclusivo associado ao seu e-mail de compra.</li>
-                    <li>Permite até <strong style="color: #ffffff;">3 downloads</strong>.</li>
-                    <li>Válido por <strong style="color: #ffffff;">7 dias</strong>.</li>
+                    <li>Links exclusivos associados ao seu e-mail de compra.</li>
+                    <li>Cada link permite até <strong style="color: #ffffff;">3 downloads</strong>.</li>
+                    <li>Válidos por <strong style="color: #ffffff;">7 dias</strong>.</li>
                   </ul>
                 </div>
 
