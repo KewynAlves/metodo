@@ -15,8 +15,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(405).json({ error: 'Método não permitido' });
   }
 
-  const secretHeader = req.headers['x-cakto-secret'] || req.query.secret;
-  if (process.env.WEBHOOK_SECRET && secretHeader !== process.env.WEBHOOK_SECRET) {
+  const secretHeader = 
+    req.headers['x-cakto-secret'] || 
+    req.headers['x-webhook-secret'] || 
+    req.query.secret || 
+    (req.body && req.body.secret);
+
+  const expectedSecret = process.env.WEBHOOK_SECRET || 'meu_metodo_sedutor@_3086';
+
+  if (secretHeader !== expectedSecret) {
     return res.status(401).json({ error: 'Não autorizado' });
   }
 
