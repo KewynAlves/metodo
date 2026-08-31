@@ -15,18 +15,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(405).json({ error: 'Método não permitido' });
   }
 
-  const secretHeader = 
-    req.headers['x-cakto-secret'] || 
-    req.headers['x-webhook-secret'] || 
-    req.query.secret || 
-    (req.body && req.body.secret);
-
-  const expectedSecret = process.env.WEBHOOK_SECRET || 'meu_metodo_sedutor@_3086';
-
-  if (secretHeader !== expectedSecret) {
-    return res.status(401).json({ error: 'Não autorizado' });
-  }
-
   try {
     const payload = req.body;
     const event = payload.event || payload.status;
@@ -45,7 +33,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(200).json({ message: 'Acesso revogado com sucesso' });
     }
 
-    if (event === 'paid' || event === 'approved' || event === 'PAID') {
+    if (event === 'paid' || event === 'approved' || event === 'PAID' || event === 'purchase_approved') {
       const token = crypto.randomUUID();
 
       await redis.set(`token:${token}`, JSON.stringify({
