@@ -1,20 +1,28 @@
 import { Redis } from '@upstash/redis';
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 
-const redis = new Redis({
-  url: process.env.UPSTASH_REDIS_REST_URL!,
-  token: process.env.UPSTASH_REDIS_REST_TOKEN!,
-});
-
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
   try {
+    // Validação defensiva das chaves de ambiente
+    const redisUrl = process.env.UPSTASH_REDIS_REST_URL;
+    const redisToken = process.env.UPSTASH_REDIS_REST_TOKEN;
+    const resendKey = process.env.RESEND_API_KEY;
+
+    if (!redisUrl || !redisToken) {
+      return res.status(500).json({ error: 'Configuração ausente', details: 'UPSTASH_REDIS_REST_URL ou TOKEN não definidos' });
+    }
+
+    const redis = new Redis({
+      url: redisUrl,
+      token: redisToken,
+    });
+
     const eventData = req.body || {};
     const event = eventData.event;
-    
     const customerEmail = eventData.customer?.email || eventData.email || 'metodosedutor1@gmail.com';
 
     if (!customerEmail) {
@@ -42,8 +50,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             }
           }
         }
-      } catch (redisError) {
-        console.error('Erro no Redis durante reembolso:', redisError);
+      } catch (redisError: any) {
+        console.error('Erro no Redis durante reembolso:', redisError?.message);
       }
 
       return res.status(200).json({ message: 'Acesso revogado com sucesso' });
@@ -132,25 +140,24 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         </div>
       `;
 
-      // Envio direto via API HTTP do Resend (Evita qualquer erro interno de SDK/pipeline da Vercel)
-      const resendResponse = await fetch('https://api.resend.com/emails', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${process.env.RESEND_API_KEY}`
-        },
-        body: JSON.stringify({
-          from: 'Método Sedutor <contato@sedutor.shop>',
-          to: [customerEmail],
-          subject: 'Seu acesso está liberado! 🚀',
-          html: htmlContent
-        })
-      });
-
-      if (!resendResponse.ok) {
-        const errText = await resendResponse.text();
-        console.error('Erro ao enviar e-mail via Resend API:', errText);
-        return res.status(500).json({ error: 'Erro ao disparar e-mail', details: errText });
+      if (resendKey) {
+        try {
+          await fetch('https://api.resend.com/emails', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${resendKey}`
+            },
+            body: JSON.stringify({
+              from: 'Método Sedutor <contato@sedutor.shop>',
+              to: [customerEmail],
+              subject: 'Seu acesso está liberado! 🚀',
+              html: htmlContent
+            })
+          });
+        } catch (emailErr) {
+          console.error('Falha ao enviar e-mail, mas o acesso foi liberado:', emailErr);
+        }
       }
 
       return res.status(200).json({ message: 'Webhook processado com sucesso' });
@@ -158,7 +165,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     return res.status(200).json({ message: 'Evento ignorado' });
   } catch (error: any) {
-    console.error('Erro crítico no webhook:', error?.message || error);
-    return res.status(500).json({ error: 'Erro interno ao processar webhook', details: error?.message });
+    console.error('Erro crítico no webhook:', error);
+    return res.status(500).json({ 
+      error: 'Erro interno ao processar webhook', 
+      details: error?.message || String(error),
+      stack: error?.stack || ''
+    });
   }
 }
