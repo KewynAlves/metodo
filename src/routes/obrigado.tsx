@@ -24,8 +24,9 @@ function ObrigadoPage() {
           Parabéns pela aquisição do <strong style={{ color: '#ffffff' }}>Método Sedutor Pro</strong>. O seu link de download exclusivo e seguro foi enviado agora pouco para o seu e-mail de compra.
         </p>
 
-        <div style={{ backgroundColor: '#18181b', border: '1px solid #27272a', padding: '16px', borderRadius: '8px', fontSize: '13px', color: '#a1a1aa', marginBottom: '30px' }}>
-          💡 Dica: Verifique sua caixa de entrada ou a aba de spam caso não encontre o e-mail na hora.
+        <div style={{ backgroundColor: '#18181b', border: '1px solid #27272a', padding: '16px', borderRadius: '8px', fontSize: '13px', color: '#a1a1aa', marginBottom: '30px', textAlign: 'left', lineHeight: '1.5' }}>
+          💡 <strong style={{ color: '#ffffff' }}>Dica:</strong> Verifique sua caixa de entrada ou spam.<br/><br/>
+          Caso ocorra algum atraso ou erro no envio, mande um e-mail para <a href="mailto:contato@sedutor.shop" style={{ color: '#e11d48', textDecoration: 'none', fontWeight: 'bold' }}>contato@sedutor.shop</a> que respondemos em menos de 24h com o envio dos produtos!
         </div>
 
         <a href="/" style={{ backgroundColor: '#e11d48', color: '#ffffff', padding: '12px 24px', textDecoration: 'none', borderRadius: '6px', fontWeight: 'bold', fontSize: '14px', display: 'inline-block', boxShadow: '0 4px 14px rgba(225, 29, 72, 0.4)' }}>
