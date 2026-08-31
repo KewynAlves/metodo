@@ -39,7 +39,7 @@ function ContatoPage() {
                 <Mail className="w-4 h-4" />
                 E-mail Oficial de Suporte
               </div>
-              <h2 className="text-foreground font-semibold text-xl">metodosedutor1@gmail.com</h2>
+              <h2 className="text-foreground font-semibold text-xl">contato@sedutor.shop</h2>
               <p className="text-xs text-muted-foreground">Envie sua dúvida detalhada para agilizar o atendimento.</p>
             </div>
             
