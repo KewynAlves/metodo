@@ -59,7 +59,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         email: customerEmail,
         hasSedutor: true, // Sempre libera o principal por segurança se passou aqui
         hasTimidez: hasTimidez, // Libera o timidez se comprou o order bump
-        downloadsLeft: 3,
+        downloadsLeft: 6,
         createdAt: new Date().toISOString()
       }), { ex: 604800 });
 
