@@ -1,10 +1,15 @@
 import { createFileRoute } from '@tanstack/react-router';
+import { useEffect } from 'react';
 
-export const Route = createFileRoute('/obrigado')({
+export const Route = createFileRoute('/obrigado' as any)({
   component: ObrigadoPage,
 });
 
 function ObrigadoPage() {
+  useEffect(() => {
+    document.title = 'Método Sedutor Pro | Pagamento Aprovado';
+  }, []);
+
   return (
     <div style={{ backgroundColor: '#09090b', color: '#d4d4d8', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'sans-serif', padding: '20px' }}>
       <div style={{ maxWidth: '500px', width: '100%', backgroundColor: '#111113', border: '1px solid #27272a', borderRadius: '12px', padding: '40px', textAlign: 'center', boxShadow: '0 10px 25px rgba(0,0,0,0.5)' }}>
