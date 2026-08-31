@@ -54,12 +54,52 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       await resend.emails.send({
         from: 'Método Sedutor <contato@sedutor.shop>',
         to: [customerEmail],
-        subject: 'Seu acesso ao Método Sedutor Pro',
+        subject: 'Seu acesso exclusivo ao Método Sedutor Pro chegou!',
+        text: `Olá! Parabéns pela aquisição do Método Sedutor Pro. O seu acesso foi liberado com sucesso. Baixe seu e-book no link: ${downloadLink}. Este link é exclusivo e permite até 3 downloads. Se precisar de suporte, basta responder a este e-mail.`,
         html: `
-          <h2>Obrigado pela compra!</h2>
-          <p>Clique no link abaixo para baixar seu e-book de forma segura:</p>
-          <p><a href="${downloadLink}" style="background:#e11d48; color:#fff; padding:12px 24px; text-decoration:none; border-radius:5px; font-weight:bold; display:inline-block;">Baixar E-book PDF</a></p>
-          <p><small>Este link é individual e permite até 3 downloads.</small></p>
+          <div style="background-color: #09090b; padding: 40px 15px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; min-height: 100%;">
+            <div style="max-width: 540px; margin: 0 auto; background-color: #111113; border-radius: 12px; overflow: hidden; border: 1px solid #27272a; box-shadow: 0 10px 25px rgba(0,0,0,0.5);">
+              
+              <!-- Header com a marca -->
+              <div style="background-color: #18181b; padding: 28px 24px; text-align: center; border-bottom: 1px solid #27272a;">
+                <span style="color: #ffffff; font-size: 20px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase;">MÉTODO SEDUTOR PRO</span>
+              </div>
+
+              <!-- Corpo principal -->
+              <div style="padding: 36px 28px; color: #d4d4d8; line-height: 1.6;">
+                <h2 style="margin-top: 0; color: #ffffff; font-size: 22px; font-weight: 700; text-align: center;">Seu acesso está liberado! 🔥</h2>
+                <p style="margin: 20px 0; color: #a1a1aa; font-size: 15px; text-align: center;">
+                  Parabéns pela decisão! Seu pagamento foi confirmado e o seu e-book digital já está pronto para ser baixado.
+                </p>
+
+                <!-- Botão de Download (CTA Principal) -->
+                <div style="text-align: center; margin: 36px 0;">
+                  <a href="${downloadLink}" style="background-color: #e11d48; color: #ffffff; padding: 16px 36px; text-decoration: none; border-radius: 8px; font-weight: 700; font-size: 16px; display: inline-block; box-shadow: 0 4px 14px rgba(225, 29, 72, 0.4);">
+                    BAIXAR E-BOOK EM PDF →
+                  </a>
+                </div>
+
+                <!-- Box Informativo de Segurança -->
+                <div style="background-color: #18181b; border: 1px solid #27272a; padding: 20px; border-radius: 8px; font-size: 13px; color: #a1a1aa; margin: 28px 0;">
+                  <strong style="color: #ffffff; font-size: 14px; display: block; margin-bottom: 8px;">📌 Informações do seu link seguro:</strong>
+                  <ul style="margin: 0; padding-left: 18px; line-height: 1.8;">
+                    <li>Link exclusivo associado ao seu e-mail de compra.</li>
+                    <li>Permite até <strong style="color: #ffffff;">3 downloads</strong> por medida de segurança.</li>
+                    <li>Válido por <strong style="color: #ffffff;">7 dias</strong> a partir de hoje.</li>
+                  </ul>
+                </div>
+
+                <hr style="border: none; border-top: 1px solid #27272a; margin: 32px 0 24px 0;" />
+
+                <!-- Suporte -->
+                <p style="font-size: 13px; color: #71717a; text-align: center; margin: 0;">
+                  Precisa de ajuda ou teve dúvidas com o download?<br />
+                  Basta <strong style="color: #a1a1aa;">responder diretamente a este e-mail</strong>. Nossa equipe está à disposição.
+                </p>
+              </div>
+
+            </div>
+          </div>
         `
       });
 
