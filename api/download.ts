@@ -1,5 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { Redis } from '@upstash/redis';
+import fs from 'fs';
+import path from 'path';
 
 const redis = new Redis({
   url: process.env.UPSTASH_REDIS_REST_KV_REST_API_URL!,
@@ -35,13 +37,25 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       await redis.set(`token:${token}`, JSON.stringify(tokenData), { keepTtl: true });
     }
 
-    // Se pediu o timidez e tem direito, redireciona para o arquivo correto
-    if (file === 'timidez' && tokenData.hasTimidez) {
-      return res.redirect(302, '/metodo-timidez-zero.pdf');
+    // Define qual arquivo enviar com base no parâmetro e permissão
+    const fileName = (file === 'timidez' && tokenData.hasTimidez) 
+      ? 'metodo-timidez-zero.pdf' 
+      : 'metodo-sedutor.pdf';
+
+    // Caminho para o arquivo na pasta public do projeto
+    const filePath = path.join(process.cwd(), 'public', fileName);
+
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).send('Arquivo não encontrado no servidor.');
     }
 
-    // Padrão: Redireciona para o Método Sedutor principal
-    return res.redirect(302, '/metodo-sedutor.pdf');
+    // Configura os headers para forçar o download seguro e mascarar a URL
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
+
+    const fileStream = fs.createReadStream(filePath);
+    return fileStream.pipe(res);
+
   } catch (error) {
     console.error('Erro no download:', error);
     return res.status(500).send('Erro interno ao processar o download.');
