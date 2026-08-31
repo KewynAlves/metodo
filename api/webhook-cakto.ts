@@ -1,5 +1,6 @@
 import { Resend } from 'resend';
 import { Redis } from '@upstash/redis';
+import type { VercelRequest, VercelResponse } from '@vercel/node';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 const redis = new Redis({
@@ -7,7 +8,7 @@ const redis = new Redis({
   token: process.env.UPSTASH_REDIS_REST_TOKEN!,
 });
 
-export default async function handler(req, res) {
+export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
@@ -23,20 +24,18 @@ export default async function handler(req, res) {
 
     // 1. TRATAMENTO DE REEMBOLSO / CHARGEBACK (Revogação total de acesso)
     if (event === 'refund' || event === 'chargeback' || event === 'REFUNDED' || event === 'CHARGEBACK') {
-      // Apaga o registro principal do e-mail
       const activeToken = await redis.get(`email:${customerEmail}`);
       if (activeToken) {
         await redis.del(`token:${activeToken}`);
         await redis.del(`email:${customerEmail}`);
       }
 
-      // Varredura completa para limpar qualquer outro token antigo ou duplicado desse e-mail
       const keys = await redis.keys(`token:*`);
       for (const key of keys) {
         const tokenDataStr = await redis.get(key);
         if (tokenDataStr) {
           try {
-            const data = typeof tokenDataStr === 'string' ? JSON.parse(tokenDataStr) : tokenDataStr;
+            const data: any = typeof tokenDataStr === 'string' ? JSON.parse(tokenDataStr) : tokenDataStr;
             if (data.email === customerEmail) {
               await redis.del(key);
             }
@@ -51,41 +50,34 @@ export default async function handler(req, res) {
 
     // 2. TRATAMENTO DE COMPRA APROVADA
     if (event === 'paid' || event === 'approved' || event === 'ORDER_APPROVED') {
-      // Identifica os produtos comprados (suporta formato de array de items ou produto único)
-      const items = eventData.items || [];
+      const items: any[] = eventData.items || [];
       const productName = eventData.product?.name || '';
       
-      const hasSedutor = items.some(item => item.name?.toLowerCase().includes('método sedutor')) || 
+      const hasSedutor = items.some((item: any) => item.name?.toLowerCase().includes('método sedutor')) || 
                          productName.toLowerCase().includes('método sedutor');
                          
-      const hasTimidez = items.some(item => item.name?.toLowerCase().includes('timidez')) || 
+      const hasTimidez = items.some((item: any) => item.name?.toLowerCase().includes('timidez')) || 
                          productName.toLowerCase().includes('timidez');
 
-      // Se por acaso o webhook vier vazio de itens mas disparou para o produto principal
       const isCombo = hasSedutor && hasTimidez;
       const isOnlySedutor = hasSedutor && !hasTimidez;
       const isOnlyTimidez = !hasSedutor && hasTimidez;
 
-      // Gera um token único seguro
       const token = Math.random().toString(36).substring(2) + Date.now().toString(36);
 
-      // Salva no Redis com limite de 6 downloads totais e validade de 7 dias (604800 segundos)
       await redis.set(`token:${token}`, JSON.stringify({
         email: customerEmail,
-        hasSedutor: true, // Sempre libera o principal se passou por aqui
+        hasSedutor: true,
         hasTimidez: isCombo || isOnlyTimidez,
         downloadsLeft: 6,
         createdAt: new Date().toISOString()
       }), { ex: 604800 });
 
-      // Associa o e-mail ao token ativo
       await redis.set(`email:${customerEmail}`, token, { ex: 604800 });
 
-      // Monta os links seguros para cada arquivo
       const linkSedutor = `https://www.sedutor.shop/api/download?token=${token}&file=sedutor`;
       const linkTimidez = `https://www.sedutor.shop/api/download?token=${token}&file=timidez`;
 
-      // Monta os botões dinamicamente no HTML do e-mail conforme o que o cliente comprou
       let buttonsHtml = '';
       let productsTitle = '';
 
@@ -107,7 +99,6 @@ export default async function handler(req, res) {
           </div>
         `;
       } else {
-        // Padrão: Apenas Método Sedutor
         productsTitle = 'Método Sedutor Pro';
         buttonsHtml = `
           <div style="text-align: center; margin: 32px 0;">
@@ -116,7 +107,6 @@ export default async function handler(req, res) {
         `;
       }
 
-      // Dispara o e-mail via Resend com layout escuro profissional
       await resend.emails.send({
         from: 'Método Sedutor <contato@sedutor.shop>',
         to: [customerEmail],
@@ -137,7 +127,7 @@ export default async function handler(req, res) {
                 <strong style="color: #ffffff; font-size: 14px; display: block; margin-bottom: 8px;">📌 Informações dos seus links seguros:</strong>
                 <ul style="margin: 0; padding-left: 18px; line-height: 1.8;">
                   <li>Links exclusivos associados ao seu e-mail de compra.</li>
-                  <li>O pacote permite até <strong style="color: #ffffff;">3 downloads totais</strong> entre os materiais.</li>
+                  <li>O pacote permite até <strong style="color: #ffffff;">6 downloads totais</strong> entre os materiais.</li>
                   <li>Válidos por <strong style="color: #ffffff;">7 dias</strong>.</li>
                 </ul>
               </div>
