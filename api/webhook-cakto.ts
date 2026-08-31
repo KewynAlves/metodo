@@ -7,7 +7,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
-    // Usando os nomes exatos das variáveis do seu painel da Vercel
     const redisUrl = process.env.UPSTASH_REDIS_REST_KV_REST_API_URL;
     const redisToken = process.env.UPSTASH_REDIS_REST_KV_REST_API_TOKEN;
     const resendKey = process.env.RESEND_API_KEY;
@@ -92,25 +91,33 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       if (isCombo) {
         productsTitle = 'Método Sedutor Pro + Bônus Timidez Zero';
         buttonsHtml = `
-          <div style="text-align: center; margin: 32px 0;">
-            <a href="${linkSedutor}" style="background-color: #e11d48; color: #ffffff; padding: 14px 28px; border-radius: 6px; text-decoration: none; font-weight: bold; display: inline-block; font-size: 15px; margin-bottom: 12px; box-shadow: 0 4px 12px rgba(225, 29, 72, 0.3);">BAIXAR MÉTODO SEDUTOR PRO →</a>
-          </div>
-          <div style="text-align: center; margin: 16px 0 32px 0;">
-            <a href="${linkTimidez}" style="background-color: #27272a; color: #ffffff; border: 1px solid #3f3f46; padding: 14px 28px; border-radius: 6px; text-decoration: none; font-weight: bold; display: inline-block; font-size: 15px;">BAIXAR BÔNUS: TIMIDEZ ZERO (PDF) →</a>
+          <div style="text-align: center; margin: 24px 0;">
+            <table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse: collapse;">
+              <tr>
+                <td align="center" style="padding-bottom: 12px;">
+                  <a href="${linkSedutor}" target="_blank" style="background-color: #e11d48; color: #ffffff; padding: 14px 28px; border-radius: 6px; text-decoration: none; font-weight: bold; display: inline-block; font-size: 15px; box-shadow: 0 4px 12px rgba(225, 29, 72, 0.3);">BAIXAR MÉTODO SEDUTOR PRO →</a>
+                </td>
+              </tr>
+              <tr>
+                <td align="center">
+                  <a href="${linkTimidez}" target="_blank" style="background-color: #27272a; color: #ffffff; border: 1px solid #3f3f46; padding: 14px 28px; border-radius: 6px; text-decoration: none; font-weight: bold; display: inline-block; font-size: 15px;">BAIXAR BÔNUS: TIMIDEZ ZERO (PDF) →</a>
+                </td>
+              </tr>
+            </table>
           </div>
         `;
       } else if (isOnlyTimidez) {
         productsTitle = 'Bônus Timidez Zero';
         buttonsHtml = `
-          <div style="text-align: center; margin: 32px 0;">
-            <a href="${linkTimidez}" style="background-color: #e11d48; color: #ffffff; padding: 14px 28px; border-radius: 6px; text-decoration: none; font-weight: bold; display: inline-block; font-size: 15px; box-shadow: 0 4px 12px rgba(225, 29, 72, 0.3);">BAIXAR BÔNUS: TIMIDEZ ZERO (PDF) →</a>
+          <div style="text-align: center; margin: 28px 0;">
+            <a href="${linkTimidez}" target="_blank" style="background-color: #e11d48; color: #ffffff; padding: 14px 28px; border-radius: 6px; text-decoration: none; font-weight: bold; display: inline-block; font-size: 15px; box-shadow: 0 4px 12px rgba(225, 29, 72, 0.3);">BAIXAR BÔNUS: TIMIDEZ ZERO (PDF) →</a>
           </div>
         `;
       } else {
         productsTitle = 'Método Sedutor Pro';
         buttonsHtml = `
-          <div style="text-align: center; margin: 32px 0;">
-            <a href="${linkSedutor}" style="background-color: #e11d48; color: #ffffff; padding: 14px 28px; border-radius: 6px; text-decoration: none; font-weight: bold; display: inline-block; font-size: 15px; box-shadow: 0 4px 12px rgba(225, 29, 72, 0.3);">BAIXAR MÉTODO SEDUTOR PRO →</a>
+          <div style="text-align: center; margin: 28px 0;">
+            <a href="${linkSedutor}" target="_blank" style="background-color: #e11d48; color: #ffffff; padding: 14px 28px; border-radius: 6px; text-decoration: none; font-weight: bold; display: inline-block; font-size: 15px; box-shadow: 0 4px 12px rgba(225, 29, 72, 0.3);">BAIXAR MÉTODO SEDUTOR PRO →</a>
           </div>
         `;
       }
@@ -119,7 +126,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         <div style="background-color: #09090b; color: #f4f4f5; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; padding: 40px 20px;">
           <div style="max-width: 600px; margin: 0 auto; background-color: #121215; border: 1px solid #27272a; border-radius: 12px; padding: 32px;">
             <h1 style="color: #ffffff; font-size: 22px; text-align: center; margin-bottom: 24px; letter-spacing: -0.5px;">MÉTODO SEDUTOR PRO</h1>
-            <p style="font-size: 16px; line-height: 1.6; color: #d4d4d8; text-align: center;">
+            <p style="font-size: 18px; line-height: 1.6; color: #ffffff; text-align: center; font-weight: bold; margin-bottom: 12px;">
+              Seu acesso está liberado! 🔥
+            </p>
+            <p style="font-size: 15px; line-height: 1.6; color: #d4d4d8; text-align: center; margin-bottom: 24px;">
               Parabéns pela decisão! Seus e-books digitais (<strong style="color: #ffffff;">${productsTitle}</strong>) já estão prontos para serem baixados.
             </p>
             ${buttonsHtml}
@@ -151,7 +161,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             body: JSON.stringify({
               from: 'Método Sedutor <contato@sedutor.shop>',
               to: [customerEmail],
-              subject: 'Seu acesso está liberado! 🚀',
+              subject: 'Seu acesso está liberado! 🔥',
               html: htmlContent
             })
           });
