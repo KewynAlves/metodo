@@ -69,7 +69,7 @@ export function Testimonials() {
       />
 
       <Reveal className="mt-16">
-        <Carousel opts={{ align: "start", loop: true }} className="w-full">
+        <Carousel opts={{ align: "start", loop: false }} className="w-full">
           <CarouselContent className="-ml-6">
             {testimonials.map((item, i) => (
               <CarouselItem key={i} className="pl-6 sm:basis-1/2 lg:basis-1/3">
