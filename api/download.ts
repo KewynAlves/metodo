@@ -42,7 +42,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     tokenData.downloadsLeft -= 1;
     await redis.set(`token:${token}`, JSON.stringify(tokenData), { ex: 604800 });
 
-    const fileName = file === 'timidez' ? 'timidez-zero.pdf' : 'metodo-sedutor.pdf';
+    const fileName = file === 'timidez' ? 'metodo-timidez-zero.pdf' : 'metodo-sedutor.pdf';
     const filePath = path.join(process.cwd(), 'public', fileName);
 
     if (!fs.existsSync(filePath)) {
