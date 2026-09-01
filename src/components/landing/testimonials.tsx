@@ -69,14 +69,14 @@ export function Testimonials() {
       />
 
       <Reveal className="mt-16">
-        <Carousel opts={{ align: "start", loop: false }} className="w-full">
+        <Carousel opts={{ align: "start", loop: false, watchResize: true }} className="w-full">
           <CarouselContent className="-ml-6">
             {testimonials.map((item, i) => (
               <CarouselItem key={i} className="pl-6 sm:basis-1/2 lg:basis-1/3">
                 <article className="flex h-full flex-col gap-6 rounded-sm border border-border bg-elevated p-8">
                   
                   {item.type === "video" ? (
-                    <div className="relative flex aspect-video items-center justify-center overflow-hidden rounded-sm border border-border bg-black">
+                    <div className="relative aspect-video w-full overflow-hidden rounded-sm border border-border bg-black">
                       {item.videoUrl ? (
                         <video
                           src={item.videoUrl}
@@ -89,12 +89,11 @@ export function Testimonials() {
                           Seu navegador não suporta a tag de vídeo.
                         </video>
                       ) : (
-                        <>
+                        <div className="flex h-full w-full items-center justify-center">
                           <span className="flex size-12 items-center justify-center rounded-full bg-primary text-primary-foreground">
                             <Play className="size-4 translate-x-px" aria-hidden />
                           </span>
-                          <span className="sr-only">Espaço para depoimento em vídeo</span>
-                        </>
+                        </div>
                       )}
                     </div>
                   ) : (
@@ -103,6 +102,7 @@ export function Testimonials() {
                         <img
                           src={item.imageUrl}
                           alt={`Print de conversa de ${item.name}`}
+                          loading="lazy"
                           className="w-full object-contain"
                         />
                       ) : (
@@ -138,6 +138,7 @@ export function Testimonials() {
                         <img
                           src={item.avatarUrl}
                           alt={item.name}
+                          loading="lazy"
                           className="h-full w-full object-cover"
                         />
                       ) : (
