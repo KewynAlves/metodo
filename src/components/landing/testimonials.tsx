@@ -1,11 +1,11 @@
 import { Play, Star, Quote } from "lucide-react";
+import * as React from "react";
 
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
+  type CarouselApi,
 } from "@/components/ui/carousel";
 import { Reveal, Section, SectionHeading } from "./primitives";
 
@@ -60,6 +60,42 @@ const testimonials: Testimonial[] = [
 ];
 
 export function Testimonials() {
+  const [api, setApi] = React.useState<CarouselApi>();
+  const [canScrollPrev, setCanScrollPrev] = React.useState(false);
+  const [canScrollNext, setCanScrollNext] = React.useState(true);
+
+  React.useEffect(() => {
+    if (!api) {
+      return;
+    }
+
+    const updateSelection = () => {
+      setCanScrollPrev(api.canScrollPrev());
+      setCanScrollNext(api.canScrollNext());
+    };
+
+    updateSelection();
+    api.on("select", updateSelection);
+    api.on("reInit", updateSelection);
+
+    return () => {
+      api.off("select", updateSelection);
+      api.off("reInit", updateSelection);
+    };
+  }, [api]);
+
+  const scrollPrev = React.useCallback(() => {
+    if (api && api.canScrollPrev()) {
+      api.scrollPrev();
+    }
+  }, [api]);
+
+  const scrollNext = React.useCallback(() => {
+    if (api && api.canScrollNext()) {
+      api.scrollNext();
+    }
+  }, [api]);
+
   return (
     <Section id="depoimentos">
       <SectionHeading
@@ -69,7 +105,11 @@ export function Testimonials() {
       />
 
       <Reveal className="mt-16">
-        <Carousel opts={{ align: "start", loop: false, watchResize: true }} className="w-full">
+        <Carousel 
+          setApi={setApi}
+          opts={{ align: "start", loop: false, watchResize: true, skipSnaps: false }} 
+          className="w-full"
+        >
           <CarouselContent className="-ml-6">
             {testimonials.map((item, i) => (
               <CarouselItem key={i} className="pl-6 sm:basis-1/2 lg:basis-1/3">
@@ -158,8 +198,22 @@ export function Testimonials() {
           </CarouselContent>
 
           <div className="mt-10 flex items-center justify-center gap-4">
-            <CarouselPrevious className="static size-11 translate-y-0 rounded-sm border-border bg-elevated hover:bg-card" />
-            <CarouselNext className="static size-11 translate-y-0 rounded-sm border-border bg-elevated hover:bg-card" />
+            <button
+              onClick={scrollPrev}
+              disabled={!canScrollPrev}
+              aria-label="Depoimento anterior"
+              className="static size-11 translate-y-0 rounded-sm border border-border bg-elevated hover:bg-card flex items-center justify-center text-foreground disabled:opacity-30 disabled:cursor-not-allowed transition-opacity"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+            </button>
+            <button
+              onClick={scrollNext}
+              disabled={!canScrollNext}
+              aria-label="Próximo depoimento"
+              className="static size-11 translate-y-0 rounded-sm border border-border bg-elevated hover:bg-card flex items-center justify-center text-foreground disabled:opacity-30 disabled:cursor-not-allowed transition-opacity"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+            </button>
           </div>
         </Carousel>
       </Reveal>
