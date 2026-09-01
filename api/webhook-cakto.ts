@@ -7,8 +7,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
-    const redisUrl = process.env.UPSTASH_REDIS_REST_KV_REST_API_URL;
-    const redisToken = process.env.UPSTASH_REDIS_REST_KV_REST_API_TOKEN;
+    const redisUrl = process.env.UPSTASH_REDIS_REST_API_URL;
+    const redisToken = process.env.UPSTASH_REDIS_REST_API_TOKEN;
     const resendKey = process.env.RESEND_API_KEY;
 
     if (!redisUrl || !redisToken) {
