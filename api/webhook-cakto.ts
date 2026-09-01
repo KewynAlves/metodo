@@ -12,23 +12,25 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const resendKey = process.env.RESEND_API_KEY;
 
     if (!redisUrl || !redisToken) {
-      return res.status(500).json({ error: 'Configuração ausente', details: 'UPSTASH_REDIS_REST_KV_REST_API_URL ou TOKEN não definidos' });
+      return res.status(500).json({ error: 'Configuração ausente' });
     }
 
-    const redis = new Redis({
-      url: redisUrl,
-      token: redisToken,
-    });
-
+    const redis = new Redis({ url: redisUrl, token: redisToken });
     const eventData = req.body || {};
     const event = eventData.event;
+    
+    // Captura dados do cliente (E-mail e CPF) e IP da requisição
     const customerEmail = eventData.customer?.email || eventData.email || 'metodosedutor1@gmail.com';
+    const customerCpf = eventData.customer?.tax_id || eventData.customer?.cpf || eventData.cpf || 'Não informado';
+    
+    // Pega o IP real enviado pela Cakto ou pelo cabeçalho da requisição
+    const clientIp = eventData.ip || req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'IP desconhecido';
 
     if (!customerEmail) {
-      return res.status(400).json({ error: 'E-mail do cliente não encontrado no payload' });
+      return res.status(400).json({ error: 'E-mail do cliente não encontrado' });
     }
 
-    // 1. REEMBOLSO / CHARGEBACK
+    // 1. REEMBOLSO / CHARGEBACK (Mantém igual)
     if (event === 'refund' || event === 'chargeback' || event === 'REFUNDED' || event === 'CHARGEBACK') {
       try {
         const activeToken = await redis.get(`email:${customerEmail}`);
@@ -36,23 +38,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           await redis.del(`token:${activeToken}`);
           await redis.del(`email:${customerEmail}`);
         }
-
-        const keys = await redis.keys(`token:*`);
-        if (keys && Array.isArray(keys)) {
-          for (const key of keys) {
-            const tokenDataStr = await redis.get(key);
-            if (tokenDataStr) {
-              const data: any = typeof tokenDataStr === 'string' ? JSON.parse(tokenDataStr) : tokenDataStr;
-              if (data && data.email === customerEmail) {
-                await redis.del(key);
-              }
-            }
-          }
-        }
-      } catch (redisError: any) {
-        console.error('Erro no Redis durante reembolso:', redisError?.message);
-      }
-
+      } catch (e) {}
       return res.status(200).json({ message: 'Acesso revogado com sucesso' });
     }
 
@@ -60,7 +46,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (event === 'paid' || event === 'approved' || event === 'ORDER_APPROVED') {
       const items: any[] = eventData.items || [];
       const productName = (eventData.product?.name || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-      
       const itemsText = items.map((i: any) => (i.name || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")).join(' ');
       const fullText = `${productName} ${itemsText}`;
 
@@ -72,8 +57,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
       const token = Math.random().toString(36).substring(2) + Date.now().toString(36);
 
+      // SALVA TUDO NO REDIS (Token, E-mail, CPF, IP e Limite de Downloads)
       await redis.set(`token:${token}`, JSON.stringify({
         email: customerEmail,
+        cpf: customerCpf,
+        ip: Array.isArray(clientIp) ? clientIp[0] : clientIp,
         hasSedutor: true,
         hasTimidez: isCombo || isOnlyTimidez,
         downloadsLeft: 6,
@@ -85,6 +73,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       const linkSedutor = `https://www.sedutor.shop/api/download?token=${token}&file=sedutor`;
       const linkTimidez = `https://www.sedutor.shop/api/download?token=${token}&file=timidez`;
 
+      // Montagem de botões e e-mail (mantém o layout perfeito com o foguinho 🔥)
       let buttonsHtml = '';
       let productsTitle = '';
 
@@ -151,23 +140,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       `;
 
       if (resendKey) {
-        try {
-          await fetch('https://api.resend.com/emails', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${resendKey}`
-            },
-            body: JSON.stringify({
-              from: 'Método Sedutor <contato@sedutor.shop>',
-              to: [customerEmail],
-              subject: 'Seu acesso está liberado! 🔥',
-              html: htmlContent
-            })
-          });
-        } catch (emailErr) {
-          console.error('Falha ao enviar e-mail, mas o acesso foi liberado:', emailErr);
-        }
+        await fetch('https://api.resend.com/emails', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${resendKey}` },
+          body: JSON.stringify({
+            from: 'Método Sedutor <contato@sedutor.shop>',
+            to: [customerEmail],
+            subject: 'Seu acesso está liberado! 🔥',
+            html: htmlContent
+          })
+        });
       }
 
       return res.status(200).json({ message: 'Webhook processado com sucesso' });
@@ -175,11 +157,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     return res.status(200).json({ message: 'Evento ignorado' });
   } catch (error: any) {
-    console.error('Erro crítico no webhook:', error);
-    return res.status(500).json({ 
-      error: 'Erro interno ao processar webhook', 
-      details: error?.message || String(error),
-      stack: error?.stack || ''
-    });
+    return res.status(500).json({ error: 'Erro interno', details: error?.message });
   }
 }

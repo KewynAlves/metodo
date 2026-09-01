@@ -1,63 +1,87 @@
-import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { Redis } from '@upstash/redis';
-import fs from 'fs';
-import path from 'path';
-
-const redis = new Redis({
-  url: process.env.UPSTASH_REDIS_REST_KV_REST_API_URL!,
-  token: process.env.UPSTASH_REDIS_REST_KV_REST_API_TOKEN!,
-});
+import { PDFDocument, rgb } from 'pdf-lib';
+import type { VercelRequest, VercelResponse } from '@vercel/node';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  const { token, file } = req.query;
-
-  if (!token || typeof token !== 'string') {
-    return res.status(400).send('Token de download ausente ou inválido.');
-  }
-
   try {
-    const tokenDataRaw = await redis.get(`token:${token}`);
+    const { token, file } = req.query;
 
-    if (!tokenDataRaw) {
-      return res.status(403).send('Este link de download expirou, foi cancelado ou não existe.');
+    if (!token || !file) {
+      return res.status(400).send('Parâmetros inválidos.');
     }
 
-    const tokenData = typeof tokenDataRaw === 'string' ? JSON.parse(tokenDataRaw) : tokenDataRaw;
+    const redisUrl = process.env.UPSTASH_REDIS_REST_KV_REST_API_URL;
+    const redisToken = process.env.UPSTASH_REDIS_REST_KV_REST_API_TOKEN;
 
+    if (!redisUrl || !redisToken) {
+      return res.status(500).send('Erro de configuração do servidor.');
+    }
+
+    const redis = new Redis({ url: redisUrl, token: redisToken });
+    const tokenDataStr = await redis.get(`token:${token}`);
+
+    if (!tokenDataStr) {
+      return res.status(404).send('Este link de download expirou, foi cancelado ou não existe.');
+    }
+
+    const tokenData: any = typeof tokenDataStr === 'string' ? JSON.parse(tokenDataStr) : tokenDataStr;
+
+    // Valida permissão do arquivo solicitado
+    if (file === 'sedutor' && !tokenData.hasSedutor) {
+      return res.status(403).send('Você não tem acesso a este arquivo.');
+    }
+    if (file === 'timidez' && !tokenData.hasTimidez) {
+      return res.status(403).send('Você não tem acesso a este arquivo.');
+    }
+
+    // Valida limite de downloads (ex: 6 tentativas totais)
     if (tokenData.downloadsLeft <= 0) {
-      return res.status(403).send('Você atingiu o limite máximo de downloads permitidos para este link.');
+      return res.status(403).send('O limite máximo de downloads para este link foi esgotado.');
     }
 
-    // Controla o consumo de downloads
+    // Decrementa 1 download no Redis
     tokenData.downloadsLeft -= 1;
+    await redis.set(`token:${token}`, JSON.stringify(tokenData), { ex: 604800 });
 
-    if (tokenData.downloadsLeft <= 0) {
-      await redis.del(`token:${token}`);
-    } else {
-      await redis.set(`token:${token}`, JSON.stringify(tokenData), { keepTtl: true });
+    // Define a URL pública onde o PDF original limpo está hospedado (ex: na pasta public do projeto)
+    const pdfUrl = file === 'timidez' 
+      ? 'https://www.sedutor.shop/books/timidez-zero.pdf' 
+      : 'https://www.sedutor.shop/books/metodo-sedutor.pdf';
+
+    const pdfBytesResponse = await fetch(pdfUrl);
+    if (!pdfBytesResponse.ok) {
+      return res.status(500).send('Erro ao carregar o e-book original.');
     }
 
-    // Define qual arquivo enviar com base no parâmetro e permissão
-    const fileName = (file === 'timidez' && tokenData.hasTimidez) 
-      ? 'metodo-timidez-zero.pdf' 
-      : 'metodo-sedutor.pdf';
+    const existingPdfBytes = await pdfBytesResponse.arrayBuffer();
 
-    // Caminho para o arquivo na pasta public do projeto
-    const filePath = path.join(process.cwd(), 'public', fileName);
+    // Carrega o PDF e aplica a marca d'água dinâmica
+    const pdfDoc = await PDFDocument.load(existingPdfBytes);
+    const pages = pdfDoc.getPages();
 
-    if (!fs.existsSync(filePath)) {
-      return res.status(404).send('Arquivo não encontrado no servidor.');
+    const watermarkText = `Licenciado para: ${tokenData.email} | CPF: ${tokenData.cpf} | IP: ${tokenData.ip} — Uso exclusivo`;
+
+    for (const page of pages) {
+      const { width } = page.getSize();
+      
+      // Insere o rodapé antifraude bem discreto na parte inferior de cada página
+      page.drawText(watermarkText, {
+        x: 40,
+        y: 20, // Rodapé inferior
+        size: 8,
+        color: rgb(0.5, 0.5, 0.5), // Cinza discreto
+        opacity: 0.6,
+      });
     }
 
-    // Configura os headers para forçar o download seguro e mascarar a URL
+    const modifiedPdfBytes = await pdfDoc.save();
+
+    // Retorna o PDF carimbado para o usuário baixar
     res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
+    res.setHeader('Content-Disposition', `attachment; filename="${file}-licenciado.pdf"`);
+    return res.send(Buffer.from(modifiedPdfBytes));
 
-    const fileStream = fs.createReadStream(filePath);
-    return fileStream.pipe(res);
-
-  } catch (error) {
-    console.error('Erro no download:', error);
+  } catch (error: any) {
     return res.status(500).send('Erro interno ao processar o download.');
   }
 }
