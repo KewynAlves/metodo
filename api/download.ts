@@ -12,8 +12,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(400).send('Parâmetros inválidos.');
     }
 
-    const redisUrl = process.env['UPSTASH_REDIS_REST_API_URL'];
-    const redisToken = process.env['UPSTASH_REDIS_REST_API_TOKEN'];
+    const redisUrl = process.env['UPSTASH_REDIS_REST_KV_REST_API_URL'];
+    const redisToken = process.env['UPSTASH_REDIS_REST_KV_REST_API_TOKEN'];
 
     if (!redisUrl || !redisToken) {
       return res.status(500).send('Erro de configuração do servidor.');
