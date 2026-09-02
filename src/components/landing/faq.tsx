@@ -1,9 +1,3 @@
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
 import { Reveal, Section, SectionHeading } from "./primitives";
 
 const faqs = [
@@ -44,18 +38,21 @@ export function Faq() {
         />
 
         <Reveal>
-          <Accordion type="multiple" className="w-full border-t border-border">
+          <div className="w-full border-t border-border">
             {faqs.map((faq, i) => (
-              <AccordionItem key={i} value={`item-${i}`} className="border-b border-border">
-                <AccordionTrigger className="py-6 text-left font-display text-xl leading-snug hover:no-underline hover:text-primary transition-colors">
-                  {faq.q}
-                </AccordionTrigger>
-                <AccordionContent className="pb-7 text-sm leading-relaxed text-muted-foreground">
+              <details key={i} className="group border-b border-border">
+                <summary className="flex cursor-pointer items-center justify-between py-6 text-left font-display text-xl leading-snug transition-colors hover:text-primary list-none [&::-webkit-details-marker]:hidden">
+                  <span>{faq.q}</span>
+                  <span className="ml-4 transition-transform duration-200 group-open:rotate-180">
+                    ▼
+                  </span>
+                </summary>
+                <div className="pb-7 text-sm leading-relaxed text-muted-foreground">
                   {faq.a}
-                </AccordionContent>
-              </AccordionItem>
+                </div>
+              </details>
             ))}
-          </Accordion>
+          </div>
         </Reveal>
       </div>
     </Section>
