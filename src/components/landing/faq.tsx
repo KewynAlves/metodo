@@ -44,10 +44,10 @@ export function Faq() {
         />
 
         <Reveal>
-          <Accordion type="single" collapsible className="w-full border-t border-border">
+          <Accordion type="multiple" className="w-full border-t border-border">
             {faqs.map((faq, i) => (
               <AccordionItem key={i} value={`item-${i}`} className="border-b border-border">
-                <AccordionTrigger className="py-6 text-left font-display text-xl leading-snug hover:no-underline hover:text-primary">
+                <AccordionTrigger className="py-6 text-left font-display text-xl leading-snug hover:no-underline hover:text-primary transition-colors">
                   {faq.q}
                 </AccordionTrigger>
                 <AccordionContent className="pb-7 text-sm leading-relaxed text-muted-foreground">
